@@ -3,6 +3,7 @@ Release history for xpointerbarrier
 next
   [Changed]
   - Makefile: We now use pkg-config for better portability.
+  - Makefile: Use C99.
 
 v18.06  2018-06-24
   - This is a maintenance release, due to the project moving away from

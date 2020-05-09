@@ -2,7 +2,7 @@ __NAME__ = xpointerbarrier
 __NAME_UPPERCASE__ = `echo $(__NAME__) | sed 's/.*/\U&/'`
 __NAME_CAPITALIZED__ = `echo $(__NAME__) | sed 's/^./\U&\E/'`
 
-CFLAGS += -Wall -Wextra -O3 `pkg-config --cflags x11 xfixes xrandr`
+CFLAGS += -std=c99 -Wall -Wextra -O2 `pkg-config --cflags x11 xfixes xrandr`
 LDFLAGS += -lm `pkg-config --libs x11 xfixes xrandr`
 
 INSTALL = install

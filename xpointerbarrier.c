@@ -4,11 +4,14 @@
  * http://who-t.blogspot.de/2012/12/whats-new-in-xi-23-pointer-barrier.html
  */
 
+#define _POSIX_C_SOURCE 199309L  /* for sigaction */
+
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include <unistd.h>
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/Xrandr.h>
