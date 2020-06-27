@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 
 struct Insets
@@ -149,20 +150,10 @@ main(int argc, char **argv)
     fd_set fds;
     int xfd;
     int barriers_active = 1;
-
-    if (argc < 5)
-    {
-        fprintf(stderr, "Usage: "__NAME__" <top> <left> <right> <bottom> [-v]\n");
-        exit(EXIT_FAILURE);
-    }
-
-    insets.top = atoi(argv[1]);
-    insets.left = atoi(argv[2]);
-    insets.right = atoi(argv[3]);
-    insets.bottom = atoi(argv[4]);
-
-    if (argc == 6 && strncmp(argv[5], "-v", 2) == 0)
-        verbose = 1;
+    Atom da;
+    int di;
+    unsigned char *prop_ret = NULL;
+    unsigned long nitems, dl;
 
     dpy = XOpenDisplay(NULL);
     if (!dpy)
@@ -170,6 +161,57 @@ main(int argc, char **argv)
         fprintf(stderr, __NAME__": Cannot open display\n");
         exit(EXIT_FAILURE);
     }
+
+    screen = DefaultScreen(dpy);
+    root = RootWindow(dpy, screen);
+
+    if (argc >= 2 && argc < 5 && strncmp(argv[1], "-k", 2) == 0)
+    {
+        if (XGetWindowProperty(dpy, root,
+                               XInternAtom(dpy, "_KATRIA_INSETS", False),
+                               0, 4, False, XA_INTEGER, &da, &di, &nitems,
+                               &dl, &prop_ret)
+            == Success && nitems == 4 && prop_ret != NULL)
+        {
+            /* Truncation might occur, checked below. */
+            insets.top = ((unsigned long *)prop_ret)[0];
+            insets.left = ((unsigned long *)prop_ret)[1];
+            insets.right = ((unsigned long *)prop_ret)[2];
+            insets.bottom = ((unsigned long *)prop_ret)[3];
+            XFree(prop_ret);
+        }
+        else
+        {
+            fprintf(stderr, __NAME__": Could not read _KATRIA_INSETS\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else if (argc >= 5)
+    {
+        insets.top = atoi(argv[1]);
+        insets.left = atoi(argv[2]);
+        insets.right = atoi(argv[3]);
+        insets.bottom = atoi(argv[4]);
+    }
+    else
+    {
+        fprintf(stderr, "Usage: "__NAME__
+                        " [-k | <top> <left> <right> <bottom>] [-v]\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (strncmp(argv[argc - 1], "-v", 2) == 0)
+        verbose = 1;
+
+    if (insets.top < 0 || insets.left < 0 || insets.right < 0 || insets.bottom < 0)
+    {
+        fprintf(stderr, __NAME__": Negative insets are invalid\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (verbose)
+        fprintf(stderr, __NAME__": Insets: top %d, left %d, right %d, bottom %d\n",
+                insets.top, insets.left, insets.right, insets.bottom);
 
     if (!XQueryExtension(dpy, "XFIXES", &fixes_opcode, &fixes_event_base,
         &fixes_error_base))
@@ -188,9 +230,6 @@ main(int argc, char **argv)
         perror("Cannot set up handler for SIGUSR1");
         exit(EXIT_FAILURE);
     }
-
-    screen = DefaultScreen(dpy);
-    root = RootWindow(dpy, screen);
 
     /* The xlib docs say: On a POSIX system, the connection number is
      * the file descriptor associated with the connection. */

@@ -1,5 +1,10 @@
 Release history for xpointerbarrier
 
+next
+  [Added]
+  - Option "-k" can read katriawm's _KATRIA_INSETS property from the
+    root window, so you don't have to calculate those insets manually.
+
 v20.05  2020-05-15
   [Changed]
   - Makefile: We now use pkg-config for better portability.
