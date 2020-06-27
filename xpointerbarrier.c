@@ -187,7 +187,7 @@ main(int argc, char **argv)
     bool barriers_active = true;
 
     dpy = XOpenDisplay(NULL);
-    if (!dpy)
+    if (dpy == NULL)
     {
         fprintf(stderr, __NAME__": Cannot open display\n");
         exit(EXIT_FAILURE);
@@ -282,7 +282,7 @@ main(int argc, char **argv)
                     fprintf(stderr, __NAME__": Got ConfigureNotify, size %dx%d\n",
                             cev->width, cev->height);
 
-                if (barriers)
+                if (barriers != NULL)
                     destroy(dpy, barriers, barriers_num);
 
                 if (barriers_active)
@@ -300,7 +300,7 @@ main(int argc, char **argv)
             do_toggle = false;
             barriers_active = !barriers_active;
 
-            if (barriers)
+            if (barriers != NULL)
                 destroy(dpy, barriers, barriers_num);
 
             if (barriers_active)
