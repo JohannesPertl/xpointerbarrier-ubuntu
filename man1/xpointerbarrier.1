@@ -1,14 +1,14 @@
-.TH xpointerbarrier 1 "2017-09-16" "xpointerbarrier" "User Commands"
+.TH xpointerbarrier 1 "2020-06-27" "xpointerbarrier" "User Commands"
 .\" --------------------------------------------------------------------
 .SH NAME
 xpointerbarrier \- Create pointer barriers around your working area
 .\" --------------------------------------------------------------------
 .SH SYNOPSIS
 \fBxpointerbarrier\fP
-\fItop\fP
+[\fItop\fP
 \fIleft\fP
 \fIright\fP
-\fIbottom\fP
+\fIbottom\fP | \fB\-k\fP]
 [\fB\-v\fP]
 .\" --------------------------------------------------------------------
 .SH DESCRIPTION
@@ -18,7 +18,7 @@ thus effectively jailing your mouse pointer to one physical screen.
 These barriers cannot be passed. This means that you need a tool that
 calls \fBXWarpPointer()\fP in order to move the pointer to another
 screen. Some window managers do this for you. Another alternative is to
-use the tool \fBswarp\fP from suckless.org.
+use the tool \fBswarp\fP(1) from suckless.org.
 .P
 \fBxpointerbarrier\fP will monitor changes to the screen layout and
 adapt to newly connected screens.
@@ -31,6 +31,10 @@ alive. As soon as the program exits, the barriers disappear.
 of the barriers on each screen in pixels. You will usually want to
 configure this in such a way that it matches up with your window
 decorations when using a tiling window manager.
+.P
+If \fB\-k\fP is specified instead of individual insets, then the program
+will read the special property \fB_KATRIA_INSETS\fP from the root
+window. \fBkatriawm\fP(1) will store precalculated insets there.
 .P
 \fB\-v\fP enables verbose output. It must be the last argument.
 .\" --------------------------------------------------------------------
@@ -53,4 +57,5 @@ accompanying \fILICENSE\fP file.
 project was started in December 2015.
 .\" --------------------------------------------------------------------
 .SH "SEE ALSO"
+.BR katriawm (1),
 .BR swarp (1).
