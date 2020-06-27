@@ -8,6 +8,7 @@
 
 #include <errno.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,8 +24,8 @@ struct Insets
     int top, left, right, bottom;
 };
 
-int do_toggle = 0;
-int verbose = 0;
+bool do_toggle = false;
+bool verbose = false;
 
 PointerBarrier
 create_barrier_verbose(Display *dpy, Window w, int x1, int y1,
@@ -131,10 +132,10 @@ handle_sigusr1(int dummy)
 {
     (void)dummy;
 
-    do_toggle = 1;
+    do_toggle = true;
 }
 
-int
+bool
 read_katria_insets(Display *dpy, Window root, struct Insets *insets)
 {
     Atom da;
@@ -157,7 +158,7 @@ read_katria_insets(Display *dpy, Window root, struct Insets *insets)
             insets->right = ((unsigned long *)prop_ret)[2];
             insets->bottom = ((unsigned long *)prop_ret)[3];
             XFree(prop_ret);
-            return 1;
+            return true;
         }
 
         if (verbose)
@@ -165,7 +166,7 @@ read_katria_insets(Display *dpy, Window root, struct Insets *insets)
 
         sleep(1);
     }
-    return 0;
+    return false;
 }
 
 int
@@ -183,7 +184,7 @@ main(int argc, char **argv)
     struct sigaction sa;
     fd_set fds;
     int xfd;
-    int barriers_active = 1;
+    bool barriers_active = true;
 
     dpy = XOpenDisplay(NULL);
     if (!dpy)
@@ -196,7 +197,7 @@ main(int argc, char **argv)
     root = RootWindow(dpy, screen);
 
     if (argc > 0 && strncmp(argv[argc - 1], "-v", 2) == 0)
-        verbose = 1;
+        verbose = true;
 
     if (argc >= 2 && argc < 5 && strncmp(argv[1], "-k", 2) == 0)
     {
@@ -296,7 +297,7 @@ main(int argc, char **argv)
             if (verbose)
                 fprintf(stderr, __NAME__": Received signal, toggling\n");
 
-            do_toggle = 0;
+            do_toggle = false;
             barriers_active = !barriers_active;
 
             if (barriers)
