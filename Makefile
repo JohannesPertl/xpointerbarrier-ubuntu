@@ -1,6 +1,4 @@
 __NAME__ = xpointerbarrier
-__NAME_UPPERCASE__ = `echo $(__NAME__) | sed 's/.*/\U&/'`
-__NAME_CAPITALIZED__ = `echo $(__NAME__) | sed 's/^./\U&\E/'`
 
 CFLAGS += -std=c99 -Wall -Wextra -O2 `pkg-config --cflags x11 xfixes xrandr`
 LDFLAGS += -lm `pkg-config --libs x11 xfixes xrandr`
@@ -20,11 +18,7 @@ man1dir = $(mandir)/man1
 .PHONY: clean install installdirs
 
 $(__NAME__): $(__NAME__).c
-	$(CC) $(CFLAGS) $(LDFLAGS) \
-		-D__NAME__=\"$(__NAME__)\" \
-		-D__NAME_UPPERCASE__=\"$(__NAME_UPPERCASE__)\" \
-		-D__NAME_CAPITALIZED__=\"$(__NAME_CAPITALIZED__)\" \
-		-o $@ $<
+	$(CC) $(CFLAGS) $(LDFLAGS) -D__NAME__=\"$(__NAME__)\" -o $@ $<
 
 clean:
 	rm -f $(__NAME__)

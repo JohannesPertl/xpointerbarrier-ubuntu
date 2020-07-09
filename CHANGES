@@ -1,6 +1,9 @@
 Release history for xpointerbarrier
 
 next
+  [Fixed]
+  - Build no longer depends on GNU sed.
+
   [Added]
   - Option "-k" can read katriawm's _KATRIA_INSETS property from the
     root window, so you don't have to calculate those insets manually.
