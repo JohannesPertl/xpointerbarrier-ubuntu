@@ -1,6 +1,6 @@
 Release history for xpointerbarrier
 
-next
+v20.07  2020-07-19
   [Fixed]
   - Build no longer depends on GNU sed.
 
