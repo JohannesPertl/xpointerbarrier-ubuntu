@@ -18,7 +18,7 @@ man1dir = $(mandir)/man1
 .PHONY: clean install installdirs
 
 $(__NAME__): $(__NAME__).c
-	$(CC) $(CFLAGS) $(LDFLAGS) -D__NAME__=\"$(__NAME__)\" -o $@ $<
+		$(CC) $(CFLAGS) $(LDFLAGS) -D__NAME__=\"$(__NAME__)\" -o $@ $< $(LDFLAGS)
 
 clean:
 	rm -f $(__NAME__)
